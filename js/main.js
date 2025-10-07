@@ -1,3 +1,36 @@
+const ADJECTIVE = [
+  'Классное',
+  'Чудесное',
+  'Невероятное',
+  'Незабываемое',
+  'Умопомрачительное',
+  'Сногсшибательное',
+];
+const NOUN = [
+  'фото',
+  'место',
+  'событие',
+  'воспоминание',
+];
+const PHRASES = [
+  'Всё отлично!',
+  'В целом всё неплохо. Но не всё.',
+  'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
+  'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
+  'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
+  'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
+];
+const NAMES = [
+  'Иван',
+  'Хуан',
+  'Мария',
+  'Кристоф',
+  'Виктор',
+  'Юлия',
+  'Люпита',
+  'Вашингтон',
+];
+
 const getRandomIntFromRange = (start, end) => {
   const lower = Math.ceil(Math.min(start, end));
   const upper = Math.floor(Math.max(start, end));
@@ -15,24 +48,7 @@ const generatePhotoId = getPhotoIdGenerator();
 
 const getPhotoUrl = (id) => `photos/${id}.jpg`;
 
-const getPhotoDescription = () => {
-  const ADJECTIVE = [
-    'Классное',
-    'Чудесное',
-    'Невероятное',
-    'Незабываемое',
-    'Умопомрачительное',
-    'Сногсшибательное',
-  ];
-  const NOUNS = [
-    'фото',
-    'место',
-    'событие',
-    'воспоминание',
-  ];
-
-  return `${getRandomElement(ADJECTIVE)} ${getRandomElement(NOUNS)}`;
-};
+const getPhotoDescription = () => `${getRandomElement(ADJECTIVE)} ${getRandomElement(NOUN)}`;
 
 function getCommentIdGenerator() {
   let id = 0;
@@ -43,15 +59,6 @@ const generateCommentId = getCommentIdGenerator();
 const getCommentAuthorAvatar = () => `img/avatar-${getRandomIntFromRange(1, 6)}.svg`;
 
 const getCommentMessage = () => {
-  const PHRASES = [
-    'Всё отлично!',
-    'В целом всё неплохо. Но не всё.',
-    'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
-    'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
-    'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
-    'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
-  ];
-
   let message = getRandomElement(PHRASES);
 
   if (Math.random() < 0.5) {
@@ -64,20 +71,7 @@ const getCommentMessage = () => {
   return message;
 };
 
-const getCommentAuthorName = () => {
-  const NAMES = [
-    'Иван',
-    'Хуан',
-    'Мария',
-    'Кристоф',
-    'Виктор',
-    'Юлия',
-    'Люпита',
-    'Вашингтон',
-  ];
-
-  return getRandomElement(NAMES);
-};
+const getCommentAuthorName = () => getRandomElement(NAMES);
 
 const createComment = () => ({
   id: generateCommentId(),
