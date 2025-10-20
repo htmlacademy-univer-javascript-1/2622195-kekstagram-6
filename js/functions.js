@@ -1,11 +1,9 @@
-function validateLength(string, maxLength) {
+export function validateLength(string, maxLength) {
   return string.length <= maxLength;
 }
 
-function isPalindrome(palindrome) {
-  function reverseString(string) {
-    return string.split('').reverse().join('');
-  }
+export function isPalindrome(palindrome) {
+  const reverseString = (string) => string.split('').reverse().join('');
 
   const formatted = palindrome
     .replaceAll(' ', '')
@@ -14,7 +12,7 @@ function isPalindrome(palindrome) {
   return formatted === reverseString(formatted);
 }
 
-function extractNumbers(input) {
+export function extractNumbers(input) {
   const string = String(input);
   let result = '';
 
@@ -27,4 +25,18 @@ function extractNumbers(input) {
   }
 
   return parseInt(result, 10);
+}
+
+export function isMeetingWithinWorkday(startWork, endWork, startMeeting, duration) {
+  const toMinutes = (time) => {
+    const [hours, minutes] = time.split(':').map(Number);
+    return hours * 60 + minutes;
+  };
+
+  const workStart = toMinutes(startWork);
+  const workEnd = toMinutes(endWork);
+  const meetingStart = toMinutes(startMeeting);
+  const meetingEnd = meetingStart + duration;
+
+  return meetingStart >= workStart && meetingEnd <= workEnd;
 }
