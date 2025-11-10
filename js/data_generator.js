@@ -1,5 +1,5 @@
-import {getRandomElement, getRandomIntFromRange} from './utils';
-import {ADJECTIVE, NAMES, NOUN, PHRASES} from './const';
+import {getRandomElement, getRandomIntFromRange} from './utils.js';
+import {ADJECTIVE, NAMES, NOUN, PHRASES} from './const.js';
 
 function getPhotoIdGenerator() {
   let id = 0;
