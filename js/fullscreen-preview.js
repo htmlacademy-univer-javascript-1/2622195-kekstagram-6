@@ -18,6 +18,8 @@ const openPreviewModal = () => {
   previewContainer.classList.remove('hidden');
   body.classList.add('modal-open');
 
+  document.addEventListener('keydown', onEscapeClick);
+
   commentsCounter.classList.add('hidden');
   commentsLoader.classList.add('hidden');
 };
@@ -25,6 +27,8 @@ const openPreviewModal = () => {
 const closePreviewModal = () => {
   previewContainer.classList.add('hidden');
   body.classList.remove('modal-open');
+
+  document.removeEventListener('keydown', onEscapeClick);
 };
 
 const insertComment = (comment) => {
@@ -57,8 +61,8 @@ export const photoMiniatureClickListener = (photo) => {
 
 modalCloseButton.addEventListener('click', closePreviewModal);
 
-document.addEventListener('keydown', (event) => {
+function onEscapeClick(event) {
   if (isKeyEscape(event.key)) {
     closePreviewModal();
   }
-});
+}
