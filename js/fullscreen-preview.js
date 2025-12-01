@@ -14,19 +14,22 @@ const commentsContainer = previewContainer.querySelector('.social__comments');
 const commentsCounter = previewContainer.querySelector('.social__comment-count');
 const commentsLoader = previewContainer.querySelector('.comments-loader');
 
+const COMMENTS_PORTION = 5;
+let loadedComments = 0;
+let currentPhoto = null;
+
 const openPreviewModal = () => {
   previewContainer.classList.remove('hidden');
   body.classList.add('modal-open');
 
   document.addEventListener('keydown', onEscapeClick);
-
-  commentsCounter.classList.add('hidden');
-  commentsLoader.classList.add('hidden');
 };
 
 const closePreviewModal = () => {
   previewContainer.classList.add('hidden');
   body.classList.remove('modal-open');
+  currentPhoto = null;
+  loadedComments = 0;
 
   document.removeEventListener('keydown', onEscapeClick);
 };
@@ -44,22 +47,42 @@ const insertComment = (comment) => {
   commentsContainer.appendChild(element);
 };
 
-const preparePreview = (photo) => {
-  image.src = photo.url;
-  description.textContent = photo.description;
-  likesCount.textContent = photo.likes;
-  commentsCount.textContent = photo.comments.length.toString();
+const renderCommentsPortion = () => {
+  const total = currentPhoto.comments.length;
+  const next = Math.min(total, loadedComments + COMMENTS_PORTION);
+
+  for (let i = loadedComments; i < next; i++) {
+    insertComment(currentPhoto.comments[i]);
+  }
+
+  loadedComments = next;
+  commentsCounter.textContent = `${loadedComments} из ${total} комментариев`;
+
+  if (loadedComments >= total) {
+    commentsLoader.classList.add('hidden');
+  } else {
+    commentsLoader.classList.remove('hidden');
+  }
+};
+
+const preparePreview = () => {
+  image.src = currentPhoto.url;
+  description.textContent = currentPhoto.description;
+  likesCount.textContent = currentPhoto.likes;
+  commentsCount.textContent = currentPhoto.comments.length.toString();
 
   removeAllChildren(commentsContainer);
-  photo.comments.forEach(insertComment);
+  renderCommentsPortion();
 };
 
 export const photoMiniatureClickListener = (photo) => {
-  preparePreview(photo);
+  currentPhoto = photo;
+  preparePreview();
   openPreviewModal();
 };
 
 modalCloseButton.addEventListener('click', closePreviewModal);
+commentsLoader.addEventListener('click', renderCommentsPortion);
 
 function onEscapeClick(event) {
   if (isKeyEscape(event.key)) {
