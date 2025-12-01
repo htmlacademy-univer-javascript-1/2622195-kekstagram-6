@@ -6,3 +6,11 @@ export const getRandomIntFromRange = (start, end) => {
 };
 
 export const getRandomElement = (elements) => elements[getRandomIntFromRange(0, elements.length - 1)];
+
+export const removeAllChildren = (parent) => {
+  while (parent.firstChild) {
+    parent.removeChild(parent.firstChild);
+  }
+};
+
+export const isKeyEscape = (key) => key === 'Escape';

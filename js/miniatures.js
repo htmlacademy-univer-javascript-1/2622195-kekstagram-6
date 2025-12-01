@@ -1,4 +1,5 @@
 import {photosList} from './main.js';
+import {photoMiniatureClickListener} from './fullscreen-preview.js';
 
 const template = document.querySelector('template#picture').content;
 const container = document.querySelector('.pictures');
@@ -6,6 +7,7 @@ const container = document.querySelector('.pictures');
 photosList.forEach((photo) => {
   const element = template.cloneNode(true);
 
+  const root = element.querySelector('.picture');
   const image = element.querySelector('.picture__img');
   const likes = element.querySelector('.picture__likes');
   const comments = element.querySelector('.picture__comments');
@@ -14,6 +16,11 @@ photosList.forEach((photo) => {
   image.alt = photo.description;
   likes.textContent = photo.likes;
   comments.textContent = photo.comments.length;
+
+  root.addEventListener('click', (e) => {
+    e.preventDefault();
+    photoMiniatureClickListener(photo);
+  });
 
   container.appendChild(element);
 });
