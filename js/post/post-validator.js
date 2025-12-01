@@ -1,5 +1,3 @@
-import Pristine from '../../vendor/pristine/pristine.js';
-
 const form = document.querySelector('.img-upload__form');
 const hashtagsInput = document.querySelector('.text__hashtags');
 const descriptionInput = document.querySelector('.text__description');
