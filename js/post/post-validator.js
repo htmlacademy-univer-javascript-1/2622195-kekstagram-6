@@ -1,3 +1,5 @@
+import {createPost} from './post-creation.js';
+
 const form = document.querySelector('.img-upload__form');
 const hashtagsInput = document.querySelector('.text__hashtags');
 const descriptionInput = document.querySelector('.text__description');
@@ -78,6 +80,7 @@ form.addEventListener('submit', (e) => {
   const isValid = postPristine.validate();
 
   if (isValid) {
-    form.submit();
+    const formData = new FormData(e.target);
+    createPost(formData);
   }
 });

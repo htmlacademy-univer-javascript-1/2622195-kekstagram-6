@@ -1,7 +1,10 @@
 import {isKeyEscape} from '../utils.js';
+import {submitPost} from '../api.js';
+import {showErrorMessage, showSuccessMessage} from '../modal-messages.js';
+
+const body = document.querySelector('body');
 
 const postModal = document.querySelector('.img-upload__overlay');
-const body = document.querySelector('body');
 const closeButton = document.querySelector('.img-upload__cancel');
 
 const form = document.querySelector('.img-upload__form');
@@ -16,11 +19,13 @@ const openPostModal = () => {
   document.addEventListener('keydown', onEscapeClick);
 };
 
-const closePostModal = () => {
+const closePostModal = (resetForm = true) => {
   postModal.classList.add('hidden');
   body.classList.remove('modal-open');
 
-  form.reset();
+  if (resetForm) {
+    form.reset();
+  }
   document.removeEventListener('keydown', onEscapeClick);
 };
 
@@ -41,3 +46,15 @@ function onEscapeClick(event) {
     closePostModal();
   }
 }
+
+export const createPost = (formData) => {
+  submitPost(formData)
+    .then(() => {
+      closePostModal();
+      showSuccessMessage();
+    })
+    .catch(() => {
+      closePostModal(false);
+      showErrorMessage();
+    });
+};
