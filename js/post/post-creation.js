@@ -2,13 +2,15 @@ import {isKeyEscape} from '../utils.js';
 import {submitPost} from '../api.js';
 import {showErrorMessage, showSuccessMessage} from '../modal-messages.js';
 
-const body = document.querySelector('body');
+const FILE_TYPES = ['jpg', 'jpeg', 'png'];
 
+const body = document.querySelector('body');
 const postModal = document.querySelector('.img-upload__overlay');
 const closeButton = document.querySelector('.img-upload__cancel');
 
 const form = document.querySelector('.img-upload__form');
 const selectedImage = document.querySelector('.img-upload__input');
+const imagePreview = document.querySelector('.img-upload__preview img');
 const hashtagsInput = document.querySelector('.text__hashtags');
 const descriptionInput = document.querySelector('.text__description');
 
@@ -29,7 +31,19 @@ const closePostModal = (resetForm = true) => {
   document.removeEventListener('keydown', onEscapeClick);
 };
 
-selectedImage.addEventListener('change', openPostModal);
+const openImage = () => {
+  const file = selectedImage.files[0];
+  const fileName = file.name.toLowerCase();
+
+  const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
+
+  if (matches) {
+    imagePreview.src = URL.createObjectURL(file);
+    openPostModal();
+  }
+};
+
+selectedImage.addEventListener('change', openImage);
 closeButton.addEventListener('click', closePostModal);
 
 const preventModalClosing = (e) => {
