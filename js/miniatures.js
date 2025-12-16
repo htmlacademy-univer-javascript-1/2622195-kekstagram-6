@@ -1,10 +1,9 @@
-import {photosList} from './main.js';
 import {photoMiniatureClickListener} from './fullscreen-preview.js';
 
 const template = document.querySelector('template#picture').content;
 const container = document.querySelector('.pictures');
 
-photosList.forEach((photo) => {
+const insertPhotoMiniature = (photo) => {
   const element = template.cloneNode(true);
 
   const root = element.querySelector('.picture');
@@ -23,4 +22,8 @@ photosList.forEach((photo) => {
   });
 
   container.appendChild(element);
-});
+};
+
+export const displayPhotos = (photosList) => {
+  photosList.forEach(insertPhotoMiniature);
+};

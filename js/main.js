@@ -1,3 +1,17 @@
-import {createPhoto} from './data-generator.js';
+import {getPhotos} from './api.js';
+import {displayPhotos} from './miniatures.js';
+import {showErrorMessage} from './modal-messages.js';
 
-export const photosList = Array.from({length: 25}, createPhoto);
+const loadPhotos = () => {
+  getPhotos()
+    .then(displayPhotos)
+    .catch(() => {
+      showErrorMessage(
+        loadPhotos,
+        'Не удалось загрузить фотографии',
+        'Попробовать снова'
+      );
+    });
+};
+
+loadPhotos();
