@@ -2,9 +2,9 @@ const EFFECTS = {
   none: {
     filter: 'none',
     unit: '',
-    min: -1,
-    max: -1,
-    step: -1
+    min: 0,
+    max: 100,
+    step: 1
   },
   chrome: {
     filter: 'grayscale',
@@ -43,12 +43,24 @@ const EFFECTS = {
   }
 };
 
+const DEFAULT_IMAGE = 'img/upload-default-image.jpg';
+const DEFAULT_SLIDER_SETTINGS = {
+  range: {
+    min: EFFECTS.none.min,
+    max: EFFECTS.none.max
+  },
+  start: EFFECTS.none.max,
+  step: EFFECTS.none.step
+};
+
 const imagePreview = document.querySelector('.img-upload__preview img');
 
 const effectLevelContainer = document.querySelector('.img-upload__effect-level');
 const effectLevelSlider = document.querySelector('.effect-level__slider');
 const effectLevelValue = document.querySelector('.effect-level__value');
 const effectsList = document.querySelector('.effects__list');
+const effectNoneRadio = document.getElementById('effect-none');
+const effectsPreviewItems = document.querySelectorAll('.effects__preview');
 
 let currentEffect = 'none';
 
@@ -66,10 +78,24 @@ noUiSlider.create(effectLevelSlider, {
   }
 });
 
+const applySliderOptions = (effect) => {
+  effectLevelSlider.noUiSlider.updateOptions({
+    range: {
+      min: effect.min,
+      max: effect.max
+    },
+    start: effect.max,
+    step: effect.step
+  });
+
+  effectLevelSlider.noUiSlider.set(effect.max);
+};
+
 const updateEffect = () => {
   if (currentEffect === 'none') {
     imagePreview.style.filter = 'none';
     effectLevelContainer.classList.add('hidden');
+    effectLevelValue.value = DEFAULT_SLIDER_SETTINGS.start;
     return;
   }
 
@@ -83,22 +109,22 @@ const onEffectChange = (evt) => {
     currentEffect = evt.target.value;
     const effect = EFFECTS[currentEffect];
 
-    effectLevelSlider.noUiSlider.updateOptions({
-      range: {
-        min: effect.min,
-        max: effect.max
-      },
-      start: effect.max,
-      step: effect.step
-    });
-
+    applySliderOptions(effect);
     updateEffect();
   }
 };
 
 export const resetEffect = () => {
   currentEffect = 'none';
+  effectNoneRadio.checked = true;
+  applySliderOptions(EFFECTS.none);
   updateEffect();
+};
+
+export const updateEffectPreviews = (url = DEFAULT_IMAGE) => {
+  effectsPreviewItems.forEach((preview) => {
+    preview.style.backgroundImage = `url('${url}')`;
+  });
 };
 
 effectLevelSlider.noUiSlider.on('update', () => {
@@ -107,4 +133,5 @@ effectLevelSlider.noUiSlider.on('update', () => {
 });
 effectsList.addEventListener('change', onEffectChange);
 
+updateEffectPreviews();
 effectLevelContainer.classList.add('hidden');
