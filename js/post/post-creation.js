@@ -1,8 +1,11 @@
 import {isKeyEscape} from '../utils.js';
 import {submitPost} from '../api.js';
 import {showErrorMessage, showSuccessMessage} from '../modal-messages.js';
+import {resetEffect, updateEffectPreviews} from './post-image-effects.js';
+import {resetScale} from './post-image-scale.js';
 
 const FILE_TYPES = ['jpg', 'jpeg', 'png'];
+const DEFAULT_IMAGE = 'img/upload-default-image.jpg';
 
 const body = document.querySelector('body');
 const postModal = document.querySelector('.img-upload__overlay');
@@ -13,6 +16,31 @@ const selectedImage = document.querySelector('.img-upload__input');
 const imagePreview = document.querySelector('.img-upload__preview img');
 const hashtagsInput = document.querySelector('.text__hashtags');
 const descriptionInput = document.querySelector('.text__description');
+const submitButton = document.querySelector('.img-upload__submit');
+
+let objectUrl = '';
+
+const disableSubmit = (state) => {
+  submitButton.disabled = state;
+  submitButton.textContent = state ? 'Публикуем...' : 'Опубликовать';
+};
+
+const clearObjectUrl = () => {
+  if (objectUrl) {
+    URL.revokeObjectURL(objectUrl);
+    objectUrl = '';
+  }
+};
+
+const resetFormState = () => {
+  clearObjectUrl();
+  form.reset();
+  resetScale();
+  resetEffect();
+  updateEffectPreviews(DEFAULT_IMAGE);
+  imagePreview.src = DEFAULT_IMAGE;
+  disableSubmit(false);
+};
 
 const openPostModal = () => {
   postModal.classList.remove('hidden');
@@ -26,19 +54,32 @@ const closePostModal = (resetForm = true) => {
   body.classList.remove('modal-open');
 
   if (resetForm) {
-    form.reset();
+    resetFormState();
   }
   document.removeEventListener('keydown', onEscapeClick);
 };
 
 const openImage = () => {
   const file = selectedImage.files[0];
+  if (!file) {
+    return;
+  }
+
   const fileName = file.name.toLowerCase();
 
   const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
 
   if (matches) {
-    imagePreview.src = URL.createObjectURL(file);
+    hashtagsInput.value = '';
+    descriptionInput.value = '';
+    form.dispatchEvent(new Event('pristine-reset'));
+    resetScale();
+    resetEffect();
+    clearObjectUrl();
+    objectUrl = URL.createObjectURL(file);
+    imagePreview.src = objectUrl;
+    updateEffectPreviews(objectUrl);
+    disableSubmit(false);
     openPostModal();
   }
 };
@@ -62,13 +103,14 @@ function onEscapeClick(event) {
 }
 
 export const createPost = (formData) => {
+  disableSubmit(true);
   submitPost(formData)
     .then(() => {
       closePostModal();
       showSuccessMessage();
     })
     .catch(() => {
-      closePostModal(false);
-      showErrorMessage();
-    });
+      showErrorMessage(null, 'Не удалось отправить форму', 'Попробовать ещё раз');
+    })
+    .finally(() => disableSubmit(false));
 };

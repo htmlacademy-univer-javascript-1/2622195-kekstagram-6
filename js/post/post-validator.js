@@ -74,6 +74,9 @@ postPristine.addValidator(
   'Комментарий не может быть длиннее 140 символов'
 );
 
+form.addEventListener('reset', () => postPristine.reset());
+form.addEventListener('pristine-reset', () => postPristine.reset());
+
 form.addEventListener('submit', (e) => {
   e.preventDefault();
 

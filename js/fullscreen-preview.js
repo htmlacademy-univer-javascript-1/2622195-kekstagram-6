@@ -8,11 +8,12 @@ const previewContainer = document.querySelector('.big-picture');
 const image = previewContainer.querySelector('.big-picture__img img');
 const description = previewContainer.querySelector('.social__caption');
 const likesCount = previewContainer.querySelector('.likes-count');
-const commentsCount = previewContainer.querySelector('.comments-count');
 const commentsContainer = previewContainer.querySelector('.social__comments');
 
 const commentsCounter = previewContainer.querySelector('.social__comment-count');
 const commentsLoader = previewContainer.querySelector('.comments-loader');
+const totalCommentsCount = previewContainer.querySelector('.social__comment-total-count');
+const shownCommentsCount = previewContainer.querySelector('.social__comment-shown-count');
 
 const COMMENTS_PORTION = 5;
 let loadedComments = 0;
@@ -56,7 +57,10 @@ const renderCommentsPortion = () => {
   }
 
   loadedComments = next;
-  commentsCounter.textContent = `${loadedComments} из ${total} комментариев`;
+  totalCommentsCount.textContent = total.toString();
+  shownCommentsCount.textContent = loadedComments.toString();
+  commentsCounter.textContent = '';
+  commentsCounter.append(shownCommentsCount, ' из ', totalCommentsCount, ' комментариев');
 
   if (loadedComments >= total) {
     commentsLoader.classList.add('hidden');
@@ -69,7 +73,7 @@ const preparePreview = () => {
   image.src = currentPhoto.url;
   description.textContent = currentPhoto.description;
   likesCount.textContent = currentPhoto.likes;
-  commentsCount.textContent = currentPhoto.comments.length.toString();
+  loadedComments = 0;
 
   removeAllChildren(commentsContainer);
   renderCommentsPortion();

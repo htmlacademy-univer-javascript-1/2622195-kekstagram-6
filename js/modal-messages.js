@@ -12,6 +12,7 @@ const showMessage = (success, onAction, customTitle, customButtonText) => {
   const element = template.cloneNode(true);
   const section = element.querySelector('section');
   const button = element.querySelector(buttonClass);
+  const wasModalOpen = body.classList.contains('modal-open');
 
   if (customTitle) {
     element.querySelector(titleClass).textContent = customTitle;
@@ -21,16 +22,18 @@ const showMessage = (success, onAction, customTitle, customButtonText) => {
   }
 
   body.append(section);
-  body.classList.add('modal-open');
 
   const closeMessage = () => {
     section.remove();
-    body.classList.remove('modal-open');
-    document.removeEventListener('keydown', onEsc);
+    if (!wasModalOpen) {
+      body.classList.remove('modal-open');
+    }
+    document.removeEventListener('keydown', onEsc, true);
   };
 
   function onEsc(e) {
     if (isKeyEscape(e.key)) {
+      e.stopPropagation();
       closeMessage();
     }
   }
@@ -49,7 +52,7 @@ const showMessage = (success, onAction, customTitle, customButtonText) => {
     }
   });
 
-  document.addEventListener('keydown', onEsc);
+  document.addEventListener('keydown', onEsc, true);
 };
 
 export const showErrorMessage = (onAction = null, customTitle = null, customButtonText = null) => {

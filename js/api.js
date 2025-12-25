@@ -10,15 +10,15 @@ const Method = {
   POST: 'POST',
 };
 
-const load = (route, method = Method.GET, body = null) =>
+const load = (route, method = Method.GET, body = null, parseJson = true) =>
   fetch(`${BASE_URL}${route}`, {method, body})
     .then((response) => {
       if (!response.ok) {
         throw new Error();
       }
-      return response.json();
+      return parseJson ? response.json() : response;
     });
 
 export const getPhotos = () => load(Route.GET_DATA);
 
-export const submitPost = (body) => load(Route.SEND_DATA, Method.POST, body);
+export const submitPost = (body) => load(Route.SEND_DATA, Method.POST, body, false);
